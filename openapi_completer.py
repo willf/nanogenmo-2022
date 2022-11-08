@@ -125,3 +125,4 @@ if __name__ == '__main__':
 ## TODO:
 # 1. Get a better chucking algorithm!
 # 2. Maintain paragraph breaks.
+# 3. Add nod to https://github.com/daveshap/RecursiveSummarizer/blob/main/recursively_summarize.py
