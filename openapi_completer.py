@@ -121,3 +121,7 @@ if __name__ == '__main__':
         json.dump(result, sys.stdout)
         sys.stdout.write('\n')
         sys.stdout.flush()
+
+## TODO:
+# 1. Get a better chucking algorithm!
+# 2. Maintain paragraph breaks.
