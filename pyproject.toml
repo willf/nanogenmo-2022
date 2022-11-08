@@ -8,6 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.9"
 openai = "^0.24.0"
+bs4 = "^0.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
@@ -15,6 +16,7 @@ flake8 = "^5.0.4"
 pytest = "^7.2.0"
 isort = "^5.10.1"
 coverage = "^6.5.0"
+ipython = "^8.5.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
