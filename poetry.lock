@@ -113,7 +113,7 @@ unicode_backport = ["unicodedata2"]
 name = "click"
 version = "8.1.3"
 description = "Composable command line interface toolkit"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -271,6 +271,14 @@ qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["Django (<3.1)", "colorama", "docopt", "pytest (<7.0.0)"]
 
 [[package]]
+name = "joblib"
+version = "1.2.0"
+description = "Lightweight pipelining with Python functions"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "matplotlib-inline"
 version = "0.1.6"
 description = "Inline Matplotlib backend for Jupyter"
@@ -296,6 +304,28 @@ description = "Experimental type system extensions for programs checked with the
 category = "dev"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "nltk"
+version = "3.7"
+description = "Natural Language Toolkit"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+click = "*"
+joblib = "*"
+regex = ">=2021.8.3"
+tqdm = "*"
+
+[package.extras]
+all = ["numpy", "pyparsing", "scipy", "matplotlib", "twython", "requests", "scikit-learn", "python-crfsuite"]
+corenlp = ["requests"]
+machine_learning = ["numpy", "python-crfsuite", "scikit-learn", "scipy"]
+plot = ["matplotlib"]
+tgrep = ["pyparsing"]
+twitter = ["twython"]
 
 [[package]]
 name = "numpy"
@@ -547,6 +577,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "regex"
+version = "2022.10.31"
+description = "Alternative regular expression module, to replace re."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
@@ -665,7 +703,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e55c99fd5d71b7295b594d6a6c8a51d57801a48bf3bd23da4868a95400ab3cd2"
+content-hash = "02404251b85610eb09acc3b24d58ed26ff3f30c229fac4ca43b6242a1f191ee0"
 
 [metadata.files]
 appnope = []
@@ -690,9 +728,11 @@ iniconfig = []
 ipython = []
 isort = []
 jedi = []
+joblib = []
 matplotlib-inline = []
 mccabe = []
 mypy-extensions = []
+nltk = []
 numpy = []
 openai = []
 openpyxl = []
@@ -715,6 +755,7 @@ pyparsing = []
 pytest = []
 python-dateutil = []
 pytz = []
+regex = []
 requests = []
 six = []
 soupsieve = []

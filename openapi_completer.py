@@ -1,4 +1,5 @@
 import configparser
+import itertools
 import json
 import os
 import re
@@ -7,7 +8,52 @@ import textwrap
 import time
 
 import openai
+from nltk import sent_tokenize
 
+# Not much is left, but I was grateful for the inspiration from this code:
+# https://github.com/daveshap/RecursiveSummarizer/blob/main/recursively_summarize.py
+
+def flatten(list_of_lists):
+    return itertools.chain.from_iterable(list_of_lists)
+
+def combine_two_chunks_if_shorter_than_maxsize(chunk1, chunk2, maxsize):
+    if len(chunk1) + len(chunk2) + 1 <= maxsize:
+        return chunk1 + " " + chunk2
+    return None
+
+def head(iterable, n=1):
+    return next(itertools.islice(iterable, n))
+
+def tail(iterable, n=1):
+    return itertools.islice(iterable, n, None)
+
+def resize_chunks(chunks, maxsize):
+    """
+    We have a bunch of chunks that we might be able to combine into larger chunks of maxsize.
+    But the sub-chunks have to be joined by spaces, so we need to make sure that we don't
+    exceed the maxsize.
+    >>> list(resize_chunks(["a", "b", "c", "d", "e", "f", "g"], 5))
+    ["a b c", "d e f", "g"]
+    """
+    if not chunks:
+        return chunks
+    resized = []
+    current_work = head(chunks, 1)
+    for chunk in tail(chunks, 1):
+        combined = combine_two_chunks_if_shorter_than_maxsize(current_work, chunk, maxsize)
+        if combined:
+            current_work = combined
+        else:
+            resized.append(current_work)
+            current_work = chunk
+    resized.append(current_work)
+    return resized
+
+def replace_newlines_with_spaces(text):
+    return re.sub(r"\n", " ", text)
+
+def break_into_paragraphs(text):
+    return text.split("\n\n")
 
 class ConfigReader():
     def __init__(self, config_var, config_file='.env', default=None):
@@ -73,7 +119,13 @@ class ChunkingCompleter():
 
     def chunk_text(self, text):
         """Chunks text into chunks of size chunk_size."""
-        return textwrap.wrap(text, self.chunk_size)
+        text = replace_newlines_with_spaces(text).strip()
+        sentences = sent_tokenize(text)
+        chunked_sentences = [textwrap.wrap(sentence, self.chunk_size) for sentence in sentences]
+        flattened = flatten(chunked_sentences)
+        chunks = [chunk for chunk in flattened if len(chunk) > 0]
+        chunks = resize_chunks(chunks, self.chunk_size)
+        return chunks
 
     def complete_chunk(self, chunk, prompt):
         """Completes a chunk of text."""
@@ -92,7 +144,7 @@ class ChunkingCompleter():
                     max_tokens=self.max_tokens
                 )
 
-                completion_chunk = response['choices'][0]['text'].strip()
+                completion_chunk = response["choices"][0]["text"].strip()
                 completion_chunk = re.sub('\s+', ' ', completion_chunk)
                 return {'completion': completion_chunk, 'success': True}
             except Exception as e:
@@ -101,6 +153,7 @@ class ChunkingCompleter():
                 sys.stderr.flush()
                 time.sleep(tries-1)
         return {'completion': '', 'success': False}
+
     def complete(self, text):
         """Completes text."""
         prompt = self.get_prompt()
@@ -117,12 +170,10 @@ class ChunkingCompleter():
 if __name__ == '__main__':
     completer = ChunkingCompleter()
     text = sys.stdin.read()
-    for result in completer.complete(text):
-        json.dump(result, sys.stdout)
-        sys.stdout.write('\n')
+    paragraphs = break_into_paragraphs(text)
+    for paragraph in paragraphs:
+        conversion = ' '.join([result['completion'] for result in completer.complete(paragraph)])
+        result = {'paragraph': paragraph, 'conversion': conversion}
+        sys.stdout.write(json.dumps(result))
+        sys.stdout.write("\n")
         sys.stdout.flush()
-
-## TODO:
-# 1. Get a better chucking algorithm!
-# 2. Maintain paragraph breaks.
-# 3. Add nod to https://github.com/daveshap/RecursiveSummarizer/blob/main/recursively_summarize.py

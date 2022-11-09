@@ -9,6 +9,7 @@ license = "MIT"
 python = "^3.9"
 openai = "^0.24.0"
 bs4 = "^0.0.1"
+nltk = "^3.7"
 
 [tool.poetry.dev-dependencies]
 black = "^22.10.0"
