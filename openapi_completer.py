@@ -134,7 +134,7 @@ class ChunkingCompleter():
             tries += 1
             try:
                 response = openai.Completion.create(
-                    model="text-davinci-002",
+                    model="text-davinci-003",
                     prompt=prompt.replace(self.variable_name, chunk),
                     temperature=self.temperature,
                     top_p=self.top_p,
