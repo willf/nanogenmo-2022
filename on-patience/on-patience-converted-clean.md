@@ -1,7 +1,7 @@
 # On Patience
 
 by Tertullian, 2nd Century
-Modernized version of S. helwall's 1869 translation
+Modernized version of S. Thelwall's 1869 translation, modernized by Will Fitzgerald
 
 ## Patience in general and Tertullian’s unsuitability to discuss it
 
